@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
 
   return (
     <div className="App">
+      <Analytics />
     </div>
   );
 }
