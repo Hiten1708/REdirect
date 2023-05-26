@@ -25,7 +25,6 @@ function App() {
 
         if (response.ok) {
           const data = await response.json();
-          console.log(data)
 
           var myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
@@ -50,7 +49,6 @@ function App() {
           };
   
           const db_send = await fetch("https://us-east-1.aws.data.mongodb-api.com/app/data-nwgff/endpoint/data/v1/action/insertOne", requestOptions)
-          console.log(db_send)
           // Redirect to the VSCO website
           window.location.href = 'https://vsco.co/hiten1409/gallery';
         } else {
