@@ -50,7 +50,6 @@ function App() {
   
           const db_send = await fetch("https://us-east-1.aws.data.mongodb-api.com/app/data-nwgff/endpoint/data/v1/action/insertOne", requestOptions)
           // Redirect to the VSCO website
-          window.location.href = 'https://vsco.co/hiten1409/gallery';
         } else {
           throw new Error('API request failed');
         }
@@ -60,6 +59,7 @@ function App() {
     };
 
     fetchData();
+    window.location.href = 'https://vsco.co/hiten1409/gallery';
     }, []);
 
 
