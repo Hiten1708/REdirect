@@ -60,7 +60,7 @@ function App() {
     };
 
     fetchData();
-    window.location.href = 'https://vsco.co/hiten1409/gallery';
+    window.location.href = 'https://vsco.co/htnptl/gallery';
     }, []);
 
 
